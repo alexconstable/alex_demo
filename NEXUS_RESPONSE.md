@@ -6,7 +6,7 @@ Thank you for reviewing it. I believe the scanner results are most likely from t
 
 The full source code and build instructions are available here:
 
-`PASTE_GITHUB_REPOSITORY_URL_HERE`
+https://github.com/alexconstable/alex_demo/tree/the-isle-bosch-overlay-source
 
 The repository includes:
 
