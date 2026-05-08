@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Isle Bosch Overlay</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-mode="compact">
+    <main class="overlay-app">
+      <section class="map-panel">
+        <div class="map-topline">
+          <div class="mode-chip">
+            <span class="mode-dot" id="mode-dot"></span>
+            <span id="connection-label">Waiting for Bosch</span>
+          </div>
+          <div class="hotkey-chip">
+            <span>Full map</span>
+            <strong id="hotkey-label">F8</strong>
+          </div>
+        </div>
+
+        <div class="map-shell" id="map-shell">
+          <div class="map-ring"></div>
+          <div id="map-view" class="map-view">
+            <div class="map-scene" id="map-scene">
+              <img id="map-image" class="map-image" src="../assets/map-light.png" alt="Gateway map" />
+              <img id="map-water-image" class="map-water-overlay" src="../assets/water.png" alt="" aria-hidden="true" />
+              <img
+                id="map-migration-image"
+                class="map-migration-overlay"
+                src="../assets/migration.png"
+                alt=""
+                aria-hidden="true"
+              />
+              <svg
+                id="map-zone-layer"
+                class="map-zone-layer"
+                viewBox="0 0 2500 2500"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <g id="migration-zone-shapes"></g>
+                <g id="sanctuary-markers"></g>
+                <g id="migration-zone-markers"></g>
+              </svg>
+              <div id="map-label-layer" class="map-label-layer" aria-hidden="true"></div>
+              <svg
+                id="map-route-layer"
+                class="map-route-layer"
+                viewBox="0 0 2500 2500"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <defs>
+                  <linearGradient id="route-player-cone-gradient" gradientUnits="userSpaceOnUse">
+                    <stop id="route-player-cone-stop-inner" offset="0%"></stop>
+                    <stop id="route-player-cone-stop-outer" offset="100%"></stop>
+                  </linearGradient>
+                </defs>
+                <polyline class="route-shadow" id="route-shadow"></polyline>
+                <polyline class="route-line" id="route-line"></polyline>
+                <path class="route-player-cone" id="route-player-cone"></path>
+                <circle class="route-player" id="route-player" r="14"></circle>
+                <circle class="route-pin" id="route-pin" r="14"></circle>
+              </svg>
+              <div id="party-marker-layer" class="party-marker-layer" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="map-overlay">
+            <div class="map-badge">
+              <span class="map-badge-label">Gateway</span>
+              <strong class="map-badge-value">Vulnona Render</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="hud-panel">
+        <div class="hud-header">
+          <div>
+            <p class="eyebrow">Live Tracker</p>
+            <h1>Bosch Island Overlay</h1>
+          </div>
+          <button class="ghost-button" id="toggle-mode-button" type="button">Full Map</button>
+        </div>
+
+        <div class="stat-grid">
+          <article class="stat-card">
+            <span>Status</span>
+            <strong id="status-value">Waiting</strong>
+          </article>
+          <article class="stat-card">
+            <span>Last Updated</span>
+            <strong id="updated-value">--</strong>
+          </article>
+          <article class="stat-card">
+            <span>Server</span>
+            <strong id="server-value">--</strong>
+          </article>
+          <article class="stat-card">
+            <span>Map X</span>
+            <strong id="map-x-value">--</strong>
+          </article>
+          <article class="stat-card">
+            <span>Map Y</span>
+            <strong id="map-y-value">--</strong>
+          </article>
+          <article class="stat-card">
+            <span>Altitude</span>
+            <strong id="altitude-value">--</strong>
+          </article>
+        </div>
+
+        <div class="action-row">
+          <button class="action-button primary" id="connect-bosch-button" type="button">Connect Bosch</button>
+          <button class="action-button" id="reload-bosch-button" type="button">Reload Bosch</button>
+          <button class="action-button" id="hide-overlay-button" type="button">Hide Overlay</button>
+          <button class="action-button" id="quit-overlay-button" type="button">Exit</button>
+        </div>
+
+        <section class="coords-panel">
+          <div class="coords-panel-header">
+            <div>
+              <p class="eyebrow">Custom Coords</p>
+              <h2>Paste Position</h2>
+            </div>
+          </div>
+
+          <form class="party-form" id="coords-form">
+            <input
+              class="party-input"
+              id="coords-input"
+              type="text"
+              placeholder="200, -56 or X=412.5 Y=175.5"
+              spellcheck="false"
+              autocomplete="off"
+            />
+            <button class="ghost-button party-submit" type="submit">Plot</button>
+          </form>
+
+          <div class="party-actions">
+            <button class="action-button" id="clear-coords-button" type="button">Clear Coords</button>
+          </div>
+
+          <p class="coords-feedback" id="coords-feedback">
+            Paste coordinates here to place yourself on the map manually when Bosch is unavailable.
+          </p>
+        </section>
+
+        <section class="party-panel">
+          <div class="party-panel-header">
+            <div>
+              <p class="eyebrow">Shared Room</p>
+              <h2>Party Tracking</h2>
+            </div>
+            <span class="party-room-chip" id="party-room-active">No room joined</span>
+          </div>
+
+          <form class="party-form" id="party-identity-form">
+            <input
+              class="party-input"
+              id="party-name-input"
+              type="text"
+              maxlength="24"
+              placeholder="Display name"
+              autocomplete="nickname"
+            />
+            <button class="ghost-button party-submit" type="submit">Create Room</button>
+          </form>
+
+          <form class="party-form" id="party-room-form">
+            <input
+              class="party-input room-code-input"
+              id="party-room-input"
+              type="text"
+              maxlength="6"
+              placeholder="Room code"
+              spellcheck="false"
+              autocomplete="off"
+            />
+            <button class="ghost-button party-submit" id="party-join-button" type="submit">Join</button>
+          </form>
+
+          <div class="party-actions">
+            <button class="action-button" id="party-leave-button" type="button">Leave Room</button>
+          </div>
+
+          <p class="party-feedback" id="party-feedback">
+            Create a room or enter a 6-character code. Bosch tracking will publish your live position automatically once it is connected.
+          </p>
+          <div class="party-member-list" id="party-member-list"></div>
+        </section>
+
+        <p class="helper-copy" id="helper-copy">
+          The overlay will follow Bosch Island after you sign in once with Steam. F8 toggles fullscreen, and F9 hides the overlay.
+        </p>
+      </aside>
+
+      <section class="bosch-sheet hidden" id="bosch-sheet">
+        <div class="bosch-card">
+          <div class="bosch-header">
+            <div>
+              <p class="eyebrow">One-Time Login</p>
+              <h2>Connect Bosch Island</h2>
+            </div>
+            <button class="ghost-button" id="close-bosch-sheet" type="button">Close</button>
+          </div>
+          <p class="bosch-copy">
+            Sign in with Steam here. Once Bosch starts showing live tracker values, the overlay will sync the Vulnona map automatically.
+          </p>
+          <div class="bosch-toolbar">
+            <button class="ghost-button" id="bosch-home-button" type="button">Home</button>
+            <button class="ghost-button" id="bosch-tracker-button" type="button">Tracker</button>
+            <button class="ghost-button" id="bosch-back-button" type="button">Back</button>
+            <button class="ghost-button" id="bosch-reload-button" type="button">Reload</button>
+          </div>
+          <div class="bosch-frame">
+            <webview
+              id="bosch-view"
+              class="bosch-view"
+              partition="persist:isle-bosch"
+              allowpopups
+            ></webview>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./app-local.js"></script>
+  </body>
+</html>

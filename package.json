@@ -1,0 +1,45 @@
+{
+  "name": "the-isle-bosch-overlay",
+  "version": "0.2.0",
+  "private": true,
+  "author": "OpenAI Codex",
+  "description": "Frameless The Isle overlay that tracks Bosch Island and renders Gateway through Vulnona.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-packager . \"The Isle Bosch Overlay\" --platform=win32 --arch=x64 --out=release --overwrite --asar --icon=assets/app-icon.ico",
+    "dist": "electron-builder --win nsis",
+    "bundle:installer": "powershell -ExecutionPolicy Bypass -File .\\installer\\Build-InstallerPackage.ps1"
+  },
+  "build": {
+    "appId": "com.theisle.boschoverlay",
+    "productName": "The Isle Bosch Overlay",
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json",
+      "assets/**/*",
+      "renderer/**/*",
+      "webviews/**/*"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "icon": "assets/app-icon.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "devDependencies": {
+    "electron": "^40.4.0",
+    "electron-builder": "^26.0.12",
+    "electron-packager": "^17.1.2"
+  }
+}
