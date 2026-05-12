@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Isle Prime Tracker</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-mode="compact">
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">The Isle</p>
+          <h1>Prime Tracker</h1>
+        </div>
+        <div class="score-orb" id="score-orb">
+          <strong id="score-value">0/5</strong>
+          <span id="score-label">Not ready</span>
+        </div>
+      </header>
+
+      <section class="status-strip">
+        <div>
+          <span>Run</span>
+          <select id="run-select" aria-label="Saved runs"></select>
+        </div>
+      </section>
+
+      <section class="progress-panel">
+        <div class="meter">
+          <span id="meter-fill"></span>
+        </div>
+        <p id="eligibility-copy">Check 5 objectives before the Prime window. Manual tracking is the source of truth.</p>
+      </section>
+
+      <section class="objective-list" id="objective-list" aria-label="Prime objectives"></section>
+
+      <section class="control-panel">
+        <button class="action-button primary" id="new-run-button" type="button">New Run</button>
+        <button class="action-button" id="rename-run-button" type="button">Rename</button>
+        <button class="action-button" id="toggle-mode-button" type="button">Expand</button>
+        <button class="action-button" id="hide-button" type="button">Hide</button>
+        <button class="action-button danger" id="quit-button" type="button">Exit</button>
+      </section>
+    </main>
+
+    <div class="name-dialog" id="name-dialog" hidden>
+      <form class="name-dialog-card" id="name-dialog-form">
+        <label for="name-dialog-input" id="name-dialog-label">Run name</label>
+        <input id="name-dialog-input" type="text" maxlength="36" autocomplete="off" />
+        <div class="dialog-actions">
+          <button class="action-button" id="name-dialog-cancel" type="button">Cancel</button>
+          <button class="action-button primary" type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

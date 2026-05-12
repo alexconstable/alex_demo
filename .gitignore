@@ -1,0 +1,9 @@
+node_modules/
+release/
+dist/
+tmp/
+assets/prime-tracker.ico
+*.log
+*.tmp
+npm-debug.log*
+.DS_Store
