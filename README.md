@@ -1,73 +1,67 @@
-# The Isle Prime Tracker
+# The Isle Bosch Overlay v2
 
-External Windows overlay for tracking Prime Elder eligibility in The Isle runs.
+Source code for the Windows desktop overlay used with the Bosch Island tracker for The Isle Gateway.
 
-This app is intentionally a companion overlay, not a game-memory mod. It does not inject into The Isle, modify game files, install services, or read process memory. The checklist is manual-first.
+This is an external Electron overlay. It does not inject into the game, patch game files, install drivers, read game memory, or modify The Isle. It displays map and tracker information in a normal desktop window over the game.
 
-## Prime Checklist
+## What V2 Adds
 
-The app tracks 5-of-9 objectives from the public `EligiblePrimeElder` checklist:
+- Vulnona-style Gateway map presentation.
+- Bosch tracker calibration against Vulnona reference points.
+- Migration, patrol, and sanctuary overlays.
+- Gastro, salt, and mud resource toggles.
+- Vulnona drinking-water overlay for lakes, ponds, rivers, and puddles.
+- Compact and full map modes.
+- Rotating compass around the compact map.
+- Improved player, friend, and location marker visibility.
+- Full-size Bosch login window instead of the old tiny embedded login strip.
+- Installer scripts that install v2 to Desktop and replace older known launchers.
 
-- Visit a sanctuary as juvenile
-- Hatch from an egg
-- Achieve perfect diet
-- Visit a mass migration zone
-- Visit 2 migration zones
-- Visit 4 patrol zones
-- Never become temporarily infertile
-- Never get muscle spasms
-- Raise children to subadult
+Vulnona deserves a clear shoutout here: v2 uses Vulnona-style Gateway map data and visual reference layers to make the overlay more accurate and readable for players.
 
-The public community consensus is that at least 5 objectives are needed, but this can change with The Isle patches and server behavior.
+## Hotkeys
 
-## Use
+- `F8`: toggle compact/full map mode.
+- `F9`: show/hide the overlay.
 
-- `F6`: compact / expanded Prime Tracker
-- `F7`: hide / show Prime Tracker
-- `Esc`: return from expanded to compact
+## Using The Map Overlays
 
-Check objectives as they happen. The migration and patrol counters can mark their matching objectives automatically.
+Open the full map with `F8`. The overlay buttons are hidden in compact mode so the small overlay stays clean.
 
-## Build
+- `Migration`: shows purple migration-zone overlays.
+- `Patrol`: shows red patrol-zone overlays.
+- `Sanctuary`: shows pink sanctuary overlays.
+- `Gastro`: shows flat Gastro food-resource icons from Vulnona map data.
+- `Salt`: shows salt-rock icons from Vulnona map data.
+- `Mud`: shows Vulnona's brown mud areas with yellow outlines.
 
-Install dependencies:
+Migration, Patrol, and Sanctuary are enabled by default. Gastro, Salt, and Mud are optional toggles for resource routing.
+
+## Repository Contents
+
+- `main.js`: Electron main process, overlay window handling, hotkeys, Bosch login window.
+- `preload.js`: safe bridge between renderer and Electron APIs.
+- `webviews/`: Bosch tracker webview preload logic.
+- `renderer/`: map UI, calibration, overlays, labels, party markers, route rendering.
+- `assets/`: map, water, mud, migration, and app icon assets.
+- `installer/`: PowerShell and SFX packaging scripts.
+- `RELEASE_NOTES_v2.md`: player-facing v2 update notes.
+- `BUILD.md`: detailed build and packaging instructions.
+- `SECURITY_REVIEW.md`: review notes for Nexus/mod-hosting verification.
+
+Generated folders such as `node_modules/`, `release/`, and `dist/` are intentionally excluded from source.
+
+## Quick Build
 
 ```powershell
 npm ci
-```
-
-Restore the app icon:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Restore-PrimeTrackerIcon.ps1
-```
-
-Run from source:
-
-```powershell
-npm start
-```
-
-Build the shareable Windows app folder:
-
-```powershell
 npm run pack
 ```
 
-The packaged executable will be under:
+The unpacked Windows app is created at:
 
 ```text
-release\The Isle Prime Tracker-win32-x64\The Isle Prime Tracker.exe
+release\The Isle Bosch Overlay-win32-x64\The Isle Bosch Overlay.exe
 ```
 
-Build an NSIS installer:
-
-```powershell
-npm run dist
-```
-
-Full build instructions are in `BUILD.md`.
-
-## Distribution Notes
-
-Unsigned Electron apps can trigger antivirus or SmartScreen warnings. For mod-community review, publish the full source, build steps, release hash, and `SECURITY_REVIEW.md` with the `.exe`.
+Full build and installer steps are in `BUILD.md`.

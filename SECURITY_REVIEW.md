@@ -1,56 +1,40 @@
 # Security Review Notes
 
-This document is intended for Nexus Mods or other file reviewers.
+The Isle Bosch Overlay v2 is an external Electron desktop overlay.
 
-The Isle Prime Tracker is a local Electron overlay for manually tracking Prime Elder checklist progress in The Isle: Evrima. The source code is JavaScript, HTML, CSS, static assets, and PowerShell helper scripts. The packaged Windows download includes the Electron and Chromium runtime, which explains most of the binary size and many of the files present in the installer payload.
+## Behavior
 
-## Why Virus Scanners May Flag It
+- Opens a transparent/frameless desktop overlay window.
+- Uses global hotkeys for show/hide and compact/full map toggles.
+- Loads Bosch Island tracker pages in an Electron webview for the current user's own tracker data.
+- Opens Bosch login in a full-size normal Electron `BrowserWindow`.
+- Renders local map assets, Vulnona-style overlay data, and resource markers.
 
-The Nexus upload is an unsigned Windows setup executable that contains an Electron application. Unsigned Electron and NSIS installer packages can trigger heuristic detections because they bundle:
+## What It Does Not Do
 
-- a large Chromium runtime
-- DLLs, `.pak` files, and `app.asar`
-- an installer/uninstaller stub
-- an executable that creates shortcuts and writes into the user's profile
+- Does not inject into The Isle.
+- Does not modify The Isle files.
+- Does not read or write game memory.
+- Does not install drivers or services.
+- Does not bypass anti-cheat.
+- Does not collect all-player positional data.
+- Does not include a hidden background updater.
 
-Those behaviors are common for desktop apps, but they can look suspicious to automated scanners when the publisher is not code-signed and the file has little reputation history.
+## Network Use
 
-## What the App Does
+The app contacts Bosch Island tracker pages because the user explicitly connects their Bosch tracker session. The app also includes locally bundled map assets derived from public map references used during development; normal map rendering is local.
 
-- Opens a frameless always-on-top overlay window.
-- Lets the user manually check Prime-related objectives.
-- Saves user-created runs locally in `%APPDATA%\the-isle-prime-tracker\prime-tracker-runs.json`.
-- Uses global hotkeys `F6` and `F7` for overlay controls.
-- Creates normal Windows shortcuts when installed through the NSIS setup.
+## Local Data
 
-## What the App Does Not Do
+Electron may persist normal web/session data for Bosch login. The overlay also stores small local UI/party state in the user's app data/session storage as part of normal Electron behavior.
 
-- It does not inject into The Isle.
-- It does not modify game files.
-- It does not read game memory.
-- It does not install a driver, kernel component, Windows service, scheduled task, or browser extension.
-- It does not collect Steam credentials.
-- It does not contact a remote server.
-- It does not auto-update or download executable payloads after install.
+## Build Verification
 
-## Network Access
+Reviewers can rebuild from source using:
 
-The Prime Tracker app itself has no intentional network calls. Network access during development/build may occur only when npm or Electron Builder downloads declared dependencies and Electron/NSIS build tools.
-
-## Filesystem Access
-
-At runtime the app writes only its saved run library through Electron's `app.getPath("userData")`, normally:
-
-```text
-%APPDATA%\the-isle-prime-tracker\prime-tracker-runs.json
+```powershell
+npm ci
+npm run pack
 ```
 
-The setup executable installs into the user's selected folder, defaulting to:
-
-```text
-Desktop\The Isle Prime Tracker
-```
-
-## Build Reproducibility
-
-Build instructions are in `BUILD.md`. Dependencies are pinned through `package-lock.json`.
+Detailed instructions are in `BUILD.md`.

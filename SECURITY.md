@@ -1,16 +1,19 @@
-# Security
+# Security Policy
 
-The Isle Prime Tracker is an external overlay.
+This project is distributed as source code plus optional Windows build scripts.
 
-It does not:
+## Reporting
+
+If you find a security concern, report it to the project maintainer through the GitHub repository or the mod distribution page where this source is linked.
+
+## Scope
+
+The application is an external Electron overlay. It should not:
 
 - inject into The Isle
-- alter game files
+- patch game files
 - read or write game memory
-- install a service or scheduled task
-- collect Steam credentials
+- install drivers or services
+- collect hidden all-player tracking data
 
-Known limitations:
-
-- Prime requirements are community-researched and may change after patches.
-- Diet, fertility, muscle spasms, hatching, and parenting must be checked manually.
+Any behavior outside that scope should be treated as a bug or security issue.

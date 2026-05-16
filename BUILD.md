@@ -1,37 +1,26 @@
 # Build Instructions
 
-These steps rebuild The Isle Prime Tracker Windows app and setup executable from source.
+These steps rebuild The Isle Bosch Overlay v2 from source on Windows.
 
 ## Prerequisites
 
-- Windows 10 or newer
-- Node.js 20 LTS or newer
-- npm, included with Node.js
-- PowerShell 5 or newer
+- Windows 10 or newer.
+- Node.js 20 LTS or newer.
+- npm, included with Node.js.
+- PowerShell 5 or newer.
+- Optional for the self-extracting installer: 7-Zip installed at `C:\Program Files\7-Zip\7z.exe`.
 
-No game files, game SDKs, native compiler toolchains, drivers, or Steam credentials are required.
+No game files, game SDKs, native compiler toolchains, Steam credentials, drivers, or administrator-only game integrations are required.
 
 ## Install Dependencies
+
+From the repository root:
 
 ```powershell
 npm ci
 ```
 
 `npm ci` installs the exact dependency versions recorded in `package-lock.json`.
-
-## Restore the App Icon
-
-The repository includes the Windows icon as a base64 text file so the source can be reviewed through normal text diffs. Restore it before packaging:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\Restore-PrimeTrackerIcon.ps1
-```
-
-This recreates:
-
-```text
-assets\prime-tracker.ico
-```
 
 ## Run From Source
 
@@ -41,53 +30,94 @@ npm start
 
 Hotkeys:
 
-- `F6`: compact / expanded Prime Tracker
-- `F7`: hide / show Prime Tracker
+- `F8`: compact/full map.
+- `F9`: show/hide overlay.
 
-## Package the Unpacked Windows App
+## Package The Unpacked Windows App
 
 ```powershell
 npm run pack
 ```
 
-This writes the unpacked Electron app to:
+This runs `electron-packager` and writes the unpacked app to:
 
 ```text
-release\The Isle Prime Tracker-win32-x64
+release\The Isle Bosch Overlay-win32-x64
 ```
 
-## Build the Nexus Setup EXE
+Main executable:
+
+```text
+release\The Isle Bosch Overlay-win32-x64\The Isle Bosch Overlay.exe
+```
+
+The `pack` script excludes generated and review-only folders:
+
+```text
+dist\
+release\
+debug\
+installer\
+```
+
+That exclusion prevents old packaged builds from being embedded back into `app.asar`.
+
+## Build The Desktop Setup Folder
+
+After `npm run pack`, create the installer payload folder:
 
 ```powershell
-npm run dist
+powershell -NoProfile -ExecutionPolicy Bypass -File .\installer\Build-InstallerPackage.ps1 `
+  -SourceAppRoot ".\release\The Isle Bosch Overlay-win32-x64" `
+  -OutputRoot ".\dist\The Isle Bosch Overlay v2 Desktop Setup"
 ```
 
-This builds an NSIS setup executable under:
+Output:
 
 ```text
-release\TheIslePrimeTracker-DesktopSetup-0.1.0.exe
+dist\The Isle Bosch Overlay v2 Desktop Setup
 ```
 
-The NSIS setup defaults the install folder to:
+This folder contains:
+
+- the packaged Electron app under `app\`
+- install, launch, and uninstall scripts
+- `README.md`
+- `RELEASE_NOTES_v2.md`
+
+## Build The Nexus-Uploadable EXE
+
+The self-extracting setup executable requires 7-Zip.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\installer\Build-SfxSetup.ps1 `
+  -PackageRoot ".\dist\The Isle Bosch Overlay v2 Desktop Setup" `
+  -OutputExe ".\dist\The-Isle-Bosch-Overlay-v2-Desktop-Setup.exe" `
+  -InstallToDesktop
+```
+
+Final output:
 
 ```text
-Desktop\The Isle Prime Tracker
+dist\The-Isle-Bosch-Overlay-v2-Desktop-Setup.exe
 ```
 
-It also creates a Desktop shortcut. The app stores user-created run data in Electron's normal per-user application data folder:
+When run, that setup extracts v2, installs it to the user's Desktop as:
 
 ```text
-%APPDATA%\the-isle-prime-tracker\prime-tracker-runs.json
+Desktop\The Isle Bosch Overlay v2
 ```
+
+It also removes older known v1/Reptarland overlay folders and replaces old desktop launcher shortcuts where possible.
 
 ## Clean Source Archive
 
-Generated folders are intentionally not source:
+These generated folders are not source and should not be committed:
 
 - `node_modules\`
 - `release\`
 - `dist\`
-- `tmp\`
-- generated `assets\prime-tracker.ico`
+- `debug\`
+- temporary SFX build folders
 
-The generated Electron/Chromium runtime files in `release\` are build artifacts, not handwritten source.
+The source required to rebuild the app is contained in this repository plus npm dependencies restored by `npm ci`.

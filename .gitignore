@@ -1,8 +1,8 @@
 node_modules/
 release/
 dist/
+debug/
 tmp/
-assets/prime-tracker.ico
 *.log
 *.tmp
 npm-debug.log*

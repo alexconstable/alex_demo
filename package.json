@@ -1,35 +1,32 @@
 {
-  "name": "the-isle-prime-tracker",
-  "version": "0.1.0",
+  "name": "the-isle-bosch-overlay",
+  "version": "0.2.0",
   "private": true,
   "author": "OpenAI Codex",
-  "description": "External overlay checklist for tracking Prime Elder eligibility in The Isle.",
+  "description": "Frameless The Isle overlay that tracks Bosch Island and renders Gateway through Vulnona.",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "pack": "electron-packager . \"The Isle Prime Tracker\" --platform=win32 --arch=x64 --out=release --overwrite --asar --icon=assets/prime-tracker.ico",
-    "bundle:desktop-setup": "powershell -ExecutionPolicy Bypass -File .\\installer\\Build-DesktopSetup.ps1",
-    "dist": "electron-builder --win nsis"
+    "pack": "electron-packager . \"The Isle Bosch Overlay\" --platform=win32 --arch=x64 --out=release --overwrite --asar --icon=assets/app-icon.ico --ignore=\"^/(dist|release|debug|installer)(/|$)\"",
+    "dist": "electron-builder --win nsis",
+    "bundle:installer": "powershell -ExecutionPolicy Bypass -File .\\installer\\Build-InstallerPackage.ps1"
   },
   "build": {
-    "appId": "com.theisle.primetracker",
-    "productName": "The Isle Prime Tracker",
+    "appId": "com.theisle.boschoverlay",
+    "productName": "The Isle Bosch Overlay",
     "files": [
       "main.js",
       "preload.js",
       "package.json",
       "assets/**/*",
       "renderer/**/*",
-      "docs/**/*",
-      "README.md",
-      "SECURITY.md"
+      "webviews/**/*"
     ],
     "directories": {
       "output": "release"
     },
     "win": {
-      "icon": "assets/prime-tracker.ico",
-      "signAndEditExecutable": false,
+      "icon": "assets/app-icon.ico",
       "target": [
         "nsis"
       ]
@@ -37,12 +34,7 @@
     "nsis": {
       "oneClick": false,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "The Isle Prime Tracker",
-      "artifactName": "TheIslePrimeTracker-DesktopSetup-${version}.${ext}",
-      "include": "build/installer.nsh"
+      "allowToChangeInstallationDirectory": true
     }
   },
   "devDependencies": {
